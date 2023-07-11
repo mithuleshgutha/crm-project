@@ -23,7 +23,7 @@ export class Dashboard extends Component {
 }
 callAPI() {
   //for 1st row
-    fetch("http://localhost:4500/a")
+    fetch("https://crm-project-6yoq.onrender.com/a")
         .then(result => result.json())
         .then(data => {
             this.setState({totp: data[0]})
@@ -33,27 +33,27 @@ callAPI() {
             console.log(data)
       });
       //for previews
-      fetch("http://localhost:4500/crm/bar")
+      fetch("https://crm-project-6yoq.onrender.com/bar")
         .then(result => result.json())
         .then(data => {
             this.setState({arr_ip: data})
             console.log(this.state.arr)
       });
-      fetch("http://localhost:4500/crm/qp")
+      fetch("https://crm-project-6yoq.onrender.com/qp")
         .then(result => result.json())
         .then(data => {
             this.setState({arr_qp: data})
             console.log(this.state.arr_qp)
       });
       //for 3rd row recent incoices
-      fetch("http://localhost:4500/crm/recentI")
+      fetch("https://crm-project-6yoq.onrender.com/recentI")
         .then(result => result.json())
         .then(data => {
             this.setState({arr_rI: data})
             console.log(this.state.arr_rI)
       });
       //for 3rd row recent Quotes
-      fetch("http://localhost:4500/crm/recentQ")
+      fetch("https://crm-project-6yoq.onrender.com/recentQ")
         .then(result => result.json())
         .then(data => {
             this.setState({arr_rQ: data})

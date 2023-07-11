@@ -1,9 +1,20 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import PaymentTableRow from "./PaymentTableRow";
+import Axios from "axios";
 import "bootstrap/dist/css/bootstrap.min.css";
 import './Payment.css';
 import Sidebar from '../components/Sidebar';
 
 const Payment = () => {
+
+    const [number,setNumber] = useState('');
+    const [date,setDate] = useState(''); 
+    const [amount,setAmount] = useState(''); 
+    const [mode,setMode] = useState('');
+    const [reference,setReference] = useState('');
+    const [desc,setDesc] = useState('');
+    const arr = [number, date, amount, mode, reference, desc];
+
   const [showForm, setShowForm] = useState(false);
 
   const handleButtonClick = () => {
@@ -12,6 +23,42 @@ const Payment = () => {
   const handleRefresh = () => {
     window.location.reload(); 
   };
+  const handlepayment = () => {
+    const url = "http://localhost:4500/crm/create-payment"
+    const obj = { number: arr[0], date:arr[1], amount: arr[2], mode: arr[3], reference: arr[4], desc: arr[5]}
+    Axios.post(url, obj)
+        .then((res) => {
+            if (res.status === 200) {
+                console.log('created');
+            }
+            else {
+                Promise.reject();
+            }
+        })
+        .catch((err) => alert(err));
+}
+const [resData,setResData] = useState([]);
+
+useEffect(()=>{
+    const url = "http://localhost:4500/crm/getpay";
+    Axios.get(url)
+    .then((res)=>{
+        if(res.status===200)
+        {
+            setResData(res.data)
+        }
+        else{
+            Promise.reject();
+        }
+    })
+    .catch((err)=>alert(err));
+},[])
+
+const Datatable = () => {
+    return resData.map((val,ind)=>{ 
+        return <PaymentTableRow obj={val} key={ind} />
+    })
+}
 
   return (
     <div>
@@ -25,33 +72,33 @@ const Payment = () => {
             <div className="d-flex">
           <div className="form-group mr-3">
             <label htmlFor="client"><font color='red'>*</font>Number</label>
-            <br /><br /><input style={{width: '150px', marginRight: '10px'}} value="1" type="number" id="no" name="client" className="form-control" />
+            <br /><br /><input value= {number} onChange={(e)=>setNumber(e.target.value)} style={{width: '150px', marginRight: '10px'}} placeholder="1" type="number" id="no" name="client" className="form-control" />
           </div>
           <div className="form-group mr-2">
             <label htmlFor="number"><font color='red'>*</font>Date</label>
-            <br /><br /><input type="date" style={{width: '150px', marginRight: '10px'}} id="date" name="number" className="form-control" />
+            <br /><br /><input type="date" onChange={(e)=>setDate(e.target.value)} value={date} style={{width: '150px', marginRight: '10px'}} id="date" name="number" className="form-control" />
           </div>
           
         </div><br />
         <div className="d-flex">
               <div className="form-group  mr-3">
                 <label htmlFor="Amount"><font color='red'>*</font>Amount</label>
-                <br /><br /><input style={{width: '320px', marginRight: '10px'}} id="amount" className="form-control" />
+                <br /><br /><input value={amount} onChange={(e)=>setAmount(e.target.value)} style={{width: '320px', marginRight: '10px'}} id="amount" className="form-control" />
               </div>
               </div><br />
               <div className="d-flex">
               <div className="form-group  mr-3">
-                <label htmlFor="Amount"><font color='red'>*</font>Payment Mode</label>
-                <br /><br /><input style={{width: '320px', marginRight: '10px'}} id="mode" className="form-control" />
+                <label ><font color='red'>*</font>Payment Mode</label>
+                <br /><br /><input value={mode} onChange={(e)=>setMode(e.target.value)} style={{width: '320px', marginRight: '10px'}} id="mode" className="form-control" />
               </div></div><br />
               <div className="d-flex">
               <div className="form-group  mr-3">
-                <label htmlFor="Amount">Reference</label>
-                <br /><br /><input style={{width: '320px', marginRight: '10px'}} id="ref" className="form-control" />
+                <label >Reference</label>
+                <br /><br /><input value={reference} onChange={(e)=>setReference(e.target.value)} style={{width: '320px', marginRight: '10px'}} id="ref" className="form-control" />
               </div></div><br />
               <label htmlFor="Amount">Description</label><br /><br />
-              <textarea style={{width: '320px', height: '70px', border: '0.1px solid lightgray'}}></textarea>
-              <br /><br /><button type="submit" className="btn btn-primary" style={{width: '200px', height: '40px'}}>Submit</button>
+              <textarea value={desc} onChange={(e)=>setDesc(e.target.value)} style={{width: '320px', height: '70px', border: '0.1px solid lightgray'}}></textarea>
+              <br /><br /><button onClick={handlepayment} type="submit"  className="btn btn-primary" style={{width: '200px', height: '40px'}}>Submit</button>
               
                                 </form><br />
                                 <div class="vertical-line" style={{border: '0.1px solid lightgray', marginLeft: '50px'}}></div></div>
@@ -62,45 +109,17 @@ const Payment = () => {
       <table>  
           <thead>
             <tr>
-              <th>#N</th>
-              <th>Client</th>
+              <th>Reference</th>
+              <th>Number</th>
               <th>Date</th>
-              <th>Due date</th>
-              <th>Total</th>
+              <th>Amount</th>
+              <th>Mode</th>
               <th>Balance</th>
-              <th>Status</th>
-              <th>Payment</th>
+
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td>1</td>
-              <td>Client 1</td>
-              <td>2023-06-23</td>
-              <td>2023-07-23</td>
-              <td>$100.00</td>
-              <td>$50.00</td>
-              <td><div style={{ backgroundColor: "lightpink", padding: "5px", borderRadius: "4px", color: "white", display: "inline-block" }}>
-      Draft
-    </div></td>
-              <td> <div style={{ backgroundColor: "lightcoral", padding: "5px", borderRadius: "4px", color: "white", display: "inline-block" }}>
-      Paid
-    </div></td>
-            </tr>
-            <tr>
-              <td>2</td>
-              <td>Client 2</td>
-              <td>2023-06-24</td>
-              <td>2023-07-24</td>
-              <td>$150.00</td>
-              <td>$0.00</td>
-              <td><div style={{ backgroundColor: "lightblue", padding: "5px", borderRadius: "4px", color: "white", display: "inline-block" }}>
-      Sent
-    </div></td>
-              <td> <div style={{ backgroundColor: "lightgreen", padding: "5px", borderRadius: "4px", color: "white", display: "inline-block" }}>
-      Unpaid
-    </div></td>
-            </tr>
+          {Datatable()}
           </tbody>
         </table>
         

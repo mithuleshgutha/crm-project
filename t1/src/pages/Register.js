@@ -7,13 +7,13 @@ export const Register = () => {
     const [lname,setLname] = useState(''); 
     const [email,setEmail] = useState(''); 
     const [pass,setPass] = useState('');
-    const [rpass,setRpass] = useState('');
+    // const [rpass,setRpass] = useState('');
     const [add1,setAdd1] = useState('');
     const [add2,setAdd2] = useState('');
     const [city,setCity] = useState('');
     const [stat,setStat] = useState('');
     const [zip,setZip] = useState('');
-    const [valid,setValid] = useState('');
+    // const [valid,setValid] = useState('');
     const arr = [fname,lname,email,pass,add1,add2,city,stat,zip];
 
     const handlesubmit = (e) => {
@@ -21,16 +21,16 @@ export const Register = () => {
         console.log(email);
     }
 
-    const handlepass = (e) => {
-      setRpass(e.target.value);
-      if(rpass!="") {
-        if(rpass===pass) {
-          setValid("Passwords match.");
-        }
-        else setValid("Passwords do not match.");
-      }
+    // const handlepass = (e) => {
+    //   setRpass(e.target.value);
+    //   if(rpass!="") {
+    //     if(rpass===pass) {
+    //       setValid("Passwords match.");
+    //     }
+    //     else setValid("Passwords do not match.");
+    //   }
       
-    }
+    // }
 
     const handleregister = () => {
       const url = "http://localhost:4500/crm/create-record"
@@ -38,7 +38,7 @@ export const Register = () => {
       Axios.post(url, obj)
           .then((res) => {
               if (res.status === 200) {
-                  console.log('created');
+                  alert('created');
               }
               else {
                   Promise.reject();

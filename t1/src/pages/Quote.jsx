@@ -1,9 +1,25 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
+import QuoteTableRow from "./QuoteTableRow";
+import Axios from "axios"
 import './Quote.css';
 import Sidebar from "../components/Sidebar";
 
 const Quote = () => {
+    const [client,setClient] = useState('');
+    const [number,setNumber] = useState(''); 
+    const [year,setYear] = useState(''); 
+    const [stat,setStat] = useState('');
+    const [note,setNote] = useState('');
+    const [dat,setDat] = useState('');
+    const [expire,setExpire] = useState('');
+    const [item,setItem] = useState('');
+    const [desc,setDesc] = useState('');
+    const [qty,setQty] = useState('');
+    const [price,setPrice] = useState('');
+    const [total,setTotal] = useState('');
+    const arr = [client, number, year, stat, note, dat, expire, item, desc, qty, price, total];
+
   const [showForm, setShowForm] = useState(false);
   const [buttonClicked, setButtonClicked] = useState(false);
   const [fields, setFields] = useState([{ item: "", description: "", quantity: "", price: "" }]);
@@ -26,6 +42,42 @@ const Quote = () => {
   const handleRefresh = () => {
     window.location.reload(); 
   };
+  const handlequote = () => {
+    const url = "http://localhost:4500/crm/create-quote"
+    const obj = { client: arr[0], number:arr[1], year: arr[2], stat: arr[3], note: arr[4], dat: arr[5], expire: arr[6], item: arr[7], desc: arr[8], qty: arr[9], price: arr[10], total: arr[11] }
+    Axios.post(url,obj)
+        .then((res) => {
+            if (res.status === 200) {
+                console.log('created');
+            }
+            else {
+                Promise.reject();
+            }
+        })
+        .catch((err) => alert(err.message));
+};
+const [resData,setResData] = useState([]);
+
+useEffect(()=>{
+    const url = "http://localhost:4500/crm/getquote";
+    Axios.get(url)
+    .then((res)=>{
+        if(res.status===200)
+        {
+            setResData(res.data)
+        }
+        else{
+            Promise.reject();
+        }
+    })
+    .catch((err)=>alert(err));
+},[])
+
+const Datatable = () => {
+    return resData.map((val,ind)=>{ 
+        return <QuoteTableRow obj={val} key={ind} />
+    })
+}
   return (
     <div>
       <Sidebar>
@@ -46,52 +98,33 @@ const Quote = () => {
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td>1</td>
-              <td>Maria</td>
-              <td>2023-06-23</td>
-              <td>2023-07-23</td>
-              <td>100.00</td>
-              <td>50.00</td>
-              <td><div style={{ backgroundColor: "lightpink", padding: "5px", borderRadius: "4px", color: "white", display: "inline-block" }}>Draft </div></td>
-              <td> <div style={{ backgroundColor: "lightcoral", padding: "5px", borderRadius: "4px", color: "white", display: "inline-block" }}>Paid</div></td>
-            </tr>
-            <tr>
-              <td>2</td>
-              <td>John</td>
-              <td>2023-06-24</td>
-              <td>2023-07-24</td>
-              <td>150.00</td>
-              <td>0.00</td>
-              <td><div style={{ backgroundColor: "lightblue", padding: "5px", borderRadius: "4px", color: "white", display: "inline-block" }}>Sent</div></td>
-              <td> <div style={{ backgroundColor: "lightgreen", padding: "5px", borderRadius: "4px", color: "white", display: "inline-block" }}>Unpaid</div></td>
-            </tr>
-          </tbody>
+          {Datatable()}
+          </tbody> 
         </table></>
       )}
 
       {showForm && (
-            <div className="container-fluid">
-              <br /><button type="submit" className="btn btn-primary" style={{width: '200px', height: '40px', marginLeft: '700px'}}>+ Save Quote</button>
+            <div >
+              <br /><button type="submit" onClick={handlequote} className="btn btn-primary" style={{width: '200px', height: '40px', marginLeft: '700px'}}>+ Save Quote</button>
               <button type="submit" className="btn" style={{width: '200px', height: '40px', marginLeft: '10px', border: '0.4px solid lightgray'}} onClick={handleCancel}>Cancel</button> <br /> 
              <hr style={{color: 'lightgray'}}></hr>
             <form>
             <div className="d-flex">
           <div className="form-group mr-3">
             <label htmlFor="client"><font color='red'>*</font>Client</label>
-            <br /><br /><input style={{width: '350px', marginRight: '10px'}} placeholder="Search Here" type="text" id="client" name="client" className="form-control" />
+            <br /><br /><input value={client} onChange={(e)=>setClient(e.target.value)} style={{width: '350px', marginRight: '10px'}} placeholder="Search Here" type="text" id="client" name="client" className="form-control" />
           </div>
           <div className="form-group mr-2">
             <label htmlFor="number"><font color='red'>*</font>Number</label>
-            <br /><br /><input type="text" style={{width: '300px', marginRight: '10px'}} value="1" id="number" name="number" className="form-control" />
+            <br /><br /><input value={number} onChange={(e)=>setNumber(e.target.value)} type="text" style={{width: '300px', marginRight: '10px'}} placeholder="1" id="number" name="number" className="form-control" />
           </div>
           <div className="form-group mr-2">
             <label htmlFor="year"><font color='red'>*</font>Year</label>
-            <br /><br /><input type="text" style={{width: '200px', marginRight: '10px'}} value="2023" id="year" name="year" className="form-control" />
+            <br /><br /><input value={year} onChange={(e)=>setYear(e.target.value)} type="text" style={{width: '200px', marginRight: '10px'}} placeholder="2023" id="year" name="year" className="form-control" />
           </div>
           <div className="form-group">
             <label htmlFor="status">Status</label>
-            <br /><br /><select style={{width: '200px', marginRight: '10px'}} id="status" name="status" className="form-control" >
+            <br /><br /><select value={stat} onChange={(e)=>setStat(e.target.value)} style={{width: '200px', marginRight: '10px'}} id="status" name="status" className="form-control" >
           <option value="draft">Draft</option>
           <option value="pending">Pending</option>
           <option value="sent">Sent</option>
@@ -101,15 +134,15 @@ const Quote = () => {
         <div className="d-flex">
               <div className="form-group  mr-3">
                 <label htmlFor="note">Note</label>
-                <br /><br /><input style={{width: '500px', marginRight: '10px'}} id="note" name="note" className="form-control" />
+                <br /><br /><input value={note} onChange={(e)=>setNote(e.target.value)} style={{width: '500px', marginRight: '10px'}} id="note" name="note" className="form-control" />
               </div>
               <div className="form-group  mr-2">
                     <label htmlFor="date"><font color='red'>*</font>Date</label>
-                    <br /><br /><input  style={{width: '300px', marginRight: '10px'}} type="date" id="dateExpire" name="dateExpire" className="form-control" />
+                    <br /><br /><input value={dat} onChange={(e)=>setDat(e.target.value)} style={{width: '300px', marginRight: '10px'}} type="date" id="dateExpire" name="dateExpire" className="form-control" />
               </div>
               <div className="form-group  mr-3">
                     <label htmlFor="dateExpire"><font color='red'>*</font>Date Expire</label>
-                    <br /><br /><input style={{width: '300px', marginRight: '10px'}} type="date" id="dateExpire" name="dateExpire" className="form-control" />
+                    <br /><br /><input value={expire} onChange={(e)=>setExpire(e.target.value)} style={{width: '300px', marginRight: '10px'}} type="date" id="dateExpire" name="dateExpire" className="form-control" />
               </div>
               </div><br /><hr style={{color: 'lightgray'}}></hr>
       
@@ -120,26 +153,26 @@ const Quote = () => {
                     <div className="col">
                     <div className="form-group  mr-3">
                       <label htmlFor={`item-${index}`}>Item</label>
-                      <br /><br /><input placeholder="ItemName" type="text" style={{width: '300px', marginRight: '10px'}} id={`item-${index}`} name={`item-${index}`} className="form-control" value={field.item} onChange={(e) => handleFieldChange(index, "item", e.target.value)}/>
+                      <br /><br /><input value={item} onChange={(e)=>setItem(e.target.value)} placeholder="ItemName" type="text" style={{width: '300px', marginRight: '10px'}} id={`item-${index}`} name={`item-${index}`} className="form-control" />
                       </div>
                     </div>
                     <div className="col">
                     <div className="form-group  mr-3">
                       <label htmlFor={`description-${index}`}>Description</label>
-                      <br /><br /><input type="text" placeholder="DescriptionName" style={{width: '300px', marginRight: '5px'}} id={`description-${index}`}  name={`description-${index}`} className="form-control" value={field.description} onChange={(e) => handleFieldChange(index, "description", e.target.value)}/>
+                      <br /><br /><input value={desc} onChange={(e)=>setDesc(e.target.value)} type="text" placeholder="DescriptionName" style={{width: '300px', marginRight: '5px'}} id={`description-${index}`}  name={`description-${index}`} className="form-control" />
                       </div>
                     </div>
                     <div className="form-group  mr-3">
                       <label htmlFor={`quantity-${index}`}>Quantity</label>
-                      <br /><br /><input type="text" style={{width: '100px', marginRight: '5px'}} id={`quantity-${index}`} name={`quantity-${index}`} className="form-control" value={field.quantity} onChange={(e) => handleFieldChange(index, "quantity", e.target.value)} />
+                      <br /><br /><input value={qty} onChange={(e)=>setQty(e.target.value)} type="text" style={{width: '100px', marginRight: '5px'}} id={`quantity-${index}`} name={`quantity-${index}`} className="form-control"  />
                       </div>
                     <div className="form-group  mr-3">
                       <label htmlFor={`price-${index}`}>Price</label>
-                      <br /><br /><input type="text" style={{width: '200px', marginRight: '10px'}} id={`price-${index}`} name={`price-${index}`} className="form-control" value={field.price}  onChange={(e) => handleFieldChange(index, "price", e.target.value)}/>
+                      <br /><br /><input value={price} onChange={(e)=>setPrice(e.target.value)} type="text" style={{width: '200px', marginRight: '10px'}} id={`price-${index}`} name={`price-${index}`} className="form-control" />
                       </div>
                       <div className="form-group  mr-3">
                       <label htmlFor={`total-${index}`}>Total</label>
-                      <br /><br /><input type="text" style={{width: '200px'}} id={`total-${index}`} name={`total-${index}`} className="form-control" value={field.price} onChange={(e) => handleFieldChange(index, "total", e.target.value)}/>
+                      <br /><br /><input value={total} onChange={(e)=>setTotal(e.target.value)} type="text" style={{width: '200px'}} id={`total-${index}`} name={`total-${index}`} className="form-control" />
                       </div>
                       </div>
                   </div><br />
@@ -149,7 +182,7 @@ const Quote = () => {
                 <button style={{width: '1125px' ,border: '1px solid lightgray'}} type="button" className="btn"  onClick={addNewField}> + Add New Field</button>
               </div><br />
               <div className="d-flex">
-              <button type="submit" className="btn btn-primary" style={{width: '200px', height: '40px'}}>+ Save Quote</button>
+              <button type="submit" onClick={handlequote} className="btn btn-primary" style={{width: '200px', height: '40px'}}>+ Save Quote</button>
             <font color='red' style={{marginLeft: '600px'}}>*</font>Subtotal 
             <input style={{width: '200px', marginLeft: '50px'}} value="0.00" type="text" id="client" name="client" className="form-control" />   
           </div><br />

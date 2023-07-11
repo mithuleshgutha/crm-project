@@ -42,7 +42,7 @@ const sch_qu = new mongoose.Schema({
 })
 const Load = mongoose.model("invoicedats1",sch_in)
 const Load_Q = mongoose.model("quotedatas",sch_qu)
-mongoose.connect("mongodb+srv://mithuleshgvn234:abcd@cluster0.tue2qrm.mongodb.net/data",{
+mongoose.connect("mongodb+srv://nithya:ZF8nOoyeTTd9lJgV@cluster0.l0zh4uf.mongodb.net/test",{
     useNewUrlParser: true, useUnifiedTopology: true
 })
 app.get("/ab", async(req,res)=>{

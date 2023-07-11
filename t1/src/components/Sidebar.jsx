@@ -60,7 +60,7 @@ const Sidebar = ({children}) => {
         <div className='nav-top'>
         <div className="top_section">
                    {/* <h1 style={{display: isOpen ? "block" : "none"}} className="logo">Logo</h1> */}
-                   <img src={pic2} height={50} width={60} onClick={toggle}/>
+                   <img src={pic2} height={50} width={60} onClick={toggle} alt="logo"/>
                    {/* <div style={{marginLeft: isOpen ? "80px" : "0px" }} className="bars">
                        <FaIcons.FaBars onClick={toggle}/>
                    </div> */}

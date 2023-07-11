@@ -1,7 +1,7 @@
 import React from 'react';
 import './App.css';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import Sidebar from './components/Sidebar';
+// import Sidebar from './components/Sidebar';
 import Admin from './pages/Admin'
 import Customer from './pages/Customer'
 import Dashboard from './pages/Dashboard'
@@ -10,8 +10,8 @@ import Invoice from './pages/Invoice'
 import Payment from './pages/Payment'
 import Quote from './pages/Quote';
 //import { Login } from './pages/Login';
-import { useState } from 'react';
-import { Register } from './pages/Register';
+// import { useState } from 'react';
+// import { Register } from './pages/Register';
 
 const App = () => {
 

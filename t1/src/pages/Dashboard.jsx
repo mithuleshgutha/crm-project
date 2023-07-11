@@ -23,7 +23,7 @@ export class Dashboard extends Component {
 }
 callAPI() {
   //for 1st row
-    fetch("http://localhost:3020/a")
+    fetch("https://crm-project-6yoq.onrender.com/a")
         .then(result => result.json())
         .then(data => {
             this.setState({totp: data[0]})
